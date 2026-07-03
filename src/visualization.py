@@ -208,3 +208,35 @@ def plot_return_distribution(returns: pd.DataFrame, save: bool = True):
     if save:
         _save(fig, "07_return_distribution.png")
     return fig
+
+
+# ── 8. Walk-Forward Backtest Comparison ──────────────────────────────────────
+
+def plot_backtest_comparison(summary: pd.DataFrame, save: bool = True):
+    """
+    Bar charts comparing walk-forward backtest MASE and directional accuracy
+    across the Naive, ARIMA and VAR models.
+    """
+    palette = {"Naive": "#7f7f7f", "ARIMA": "darkorange", "VAR": "green"}
+    bar_colors = [palette.get(m, "#1f77b4") for m in summary.index]
+
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
+
+    axes[0].bar(summary.index, summary["MASE"], color=bar_colors)
+    axes[0].axhline(1.0, color="red", linestyle="--", linewidth=1, label="MASE = 1 (naive baseline)")
+    axes[0].set_title("Mean Absolute Scaled Error\n(lower is better)", fontsize=11, fontweight="bold")
+    axes[0].set_ylabel("MASE")
+    axes[0].legend()
+
+    axes[1].bar(summary.index, summary["Directional_Accuracy"], color=bar_colors)
+    axes[1].axhline(50, color="red", linestyle="--", linewidth=1, label="Coin-flip (50%)")
+    axes[1].set_title("Directional Accuracy\n(higher is better)", fontsize=11, fontweight="bold")
+    axes[1].set_ylabel("% Correct Direction")
+    axes[1].set_ylim(0, 100)
+    axes[1].legend()
+
+    fig.suptitle("Walk-Forward Backtest — Naive vs ARIMA vs VAR", fontsize=13, fontweight="bold")
+    fig.tight_layout()
+    if save:
+        _save(fig, "08_backtest_comparison.png")
+    return fig

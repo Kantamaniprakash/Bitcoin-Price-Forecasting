@@ -10,6 +10,7 @@
 - [Research Questions](#research-questions)
 - [Methodology](#methodology)
 - [Key Results](#key-results)
+- [Walk-Forward Backtesting](#walk-forward-backtesting)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -85,6 +86,29 @@ Both models produce 30-day forecasts with widening confidence intervals reflecti
 
 ---
 
+## Walk-Forward Backtesting
+
+The 30-day headline forecast above is a single point-in-time estimate. To know whether ARIMA and VAR actually forecast better than doing nothing, the project runs a **walk-forward (rolling-origin) backtest**: both models are re-fit at a sequence of expanding-window origins across the last ~20% of the dataset, each time forecasting `horizon` days ahead using only data available up to that origin. A single train/test split only ever scores a model against one market regime — walk-forward validation avoids that regime-specific luck, which is why it's the standard now used to report accuracy for both classical models and time-series foundation models.
+
+Each model is scored against a **naive random-walk baseline** (tomorrow = today) on:
+
+| Metric | What it measures |
+|---|---|
+| MAE / RMSE | Absolute price error, in USD |
+| MAPE | Percentage error |
+| **MASE** | Mean Absolute Scaled Error — MAE scaled by the naive baseline's in-sample error. MASE < 1 means the model beats a naive random walk; MASE > 1 means it doesn't. |
+| Directional Accuracy | % of origins where the model correctly predicted the sign of the price move |
+
+Run it with:
+
+```bash
+python backtest.py
+```
+
+This saves a per-model summary (`results/backtest_summary.csv`), the full per-origin error detail (`results/backtest_detail.csv`), and a comparison chart (`results/08_backtest_comparison.png`).
+
+---
+
 ## Project Structure
 
 ```
@@ -93,6 +117,7 @@ bitcoin-price-forecasting/
 ├── README.md
 ├── requirements.txt
 ├── main.py                          # End-to-end pipeline runner
+├── backtest.py                      # Walk-forward backtest runner
 │
 ├── notebooks/
 │   └── Bitcoin_Price_Forecasting.ipynb   # Full analysis (recommended entry point)
@@ -104,6 +129,7 @@ bitcoin-price-forecasting/
 │   ├── granger_causality.py         # Pairwise Granger tests
 │   ├── arima_model.py               # ARIMA fitting + forecasting
 │   ├── var_model.py                 # VAR fitting + forecasting
+│   ├── backtesting.py               # Walk-forward validation + MASE/directional accuracy
 │   └── visualization.py            # All plotting functions
 │
 ├── data/
@@ -117,7 +143,10 @@ bitcoin-price-forecasting/
     ├── 05_var_forecast.png
     ├── 06_combined_forecast.png
     ├── 07_return_distribution.png
-    └── forecast_summary.csv
+    ├── 08_backtest_comparison.png
+    ├── forecast_summary.csv
+    ├── backtest_summary.csv
+    └── backtest_detail.csv
 ```
 
 ---
@@ -153,6 +182,12 @@ The notebook walks through every step with explanations, equations, and inline v
 python main.py
 ```
 Runs the full pipeline and saves all plots + CSV summary to `results/`.
+
+### Option C — Walk-Forward Backtest
+```bash
+python backtest.py
+```
+Runs the rolling-origin backtest described [above](#walk-forward-backtesting) and saves the comparison chart + CSV results to `results/`.
 
 ---
 
