@@ -1,5 +1,9 @@
 # Bitcoin Price Forecasting — ARIMA & VAR with Granger Causality
 
+[![CI](https://github.com/Kantamaniprakash/Bitcoin-Price-Forecasting/actions/workflows/ci.yml/badge.svg)](https://github.com/Kantamaniprakash/Bitcoin-Price-Forecasting/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+
 > **Master's Capstone Project** | Time-Series Econometrics
 > Built forecasting models for Bitcoin prices over a 30-day horizon using ARIMA and VAR models with 95% confidence intervals, and determined Granger causality relationships between Bitcoin, Euro/USD, Gold, S&P 500, and Crude Oil.
 
@@ -155,8 +159,8 @@ bitcoin-price-forecasting/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/bitcoin-price-forecasting.git
-cd bitcoin-price-forecasting
+git clone https://github.com/Kantamaniprakash/Bitcoin-Price-Forecasting.git
+cd Bitcoin-Price-Forecasting
 
 # 2. Create and activate a virtual environment (recommended)
 python -m venv venv
