@@ -9,5 +9,5 @@ scipy>=1.11.0
 pmdarima>=2.0.4
 plotly>=5.18.0
 jupyter>=1.0.0
-ipykernel>=6.0.0
+ipykernel>=7.3.0
 nbformat>=5.9.0
